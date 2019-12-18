@@ -168,6 +168,76 @@ function ClausePlugin() {
     return next();
   }
 
+  /* eslint no-underscore-dangle: 0 */
+  /* eslint default-case: 0 */
+  /**
+   * Check if UI valid (depth first traversal)
+   * @param {object} params - recursion params
+   * @param {object} nodes - the Slate nodes
+   */
+  function _somethingHere(children) {
+    // take this and implement a new sub styling to anything in case `ul_list`
+    // console.log('children:');
+    // console.log('children:');
+    // console.log('children:', children);
+    // console.log('children:');
+    // console.log('children:');
+
+    children.forEach((child) => {
+      if (child.props
+        && child.props.node
+        && child.props.node.type
+        && (child.props.node.type === 'ul_list' || child.props.node.type === 'ol_list')) {
+        console.log('yes');
+      }
+    });
+
+
+    // nodes.forEach((node) => {
+    //   const nodeType = node.type;
+    //   switch (node.object) {
+    //     case 'text':
+    //       break;
+    //     default: {
+    //       switch (nodeType) {
+    //         case 'conditional':
+    //           throw new Error('Conditional variable not supported');
+    //         case 'computed':
+    //           throw new Error('Computed variable not supported');
+    //         case 'html_block':
+    //           throw new Error('HTML block not supported');
+    //         case 'code_block':
+    //           throw new Error('Code block not supported');
+    //         case 'html_inline':
+    //           throw new Error('HTML inline not supported');
+    //         case 'image':
+    //           throw new Error('Image not supported');
+    //         case 'ol_list':
+    //         case 'ul_list': {
+    //           if (node.data.kind === 'variable') {
+    //             throw new Error('List variable not supported');
+    //           } if (params.depth > 0) {
+    //             throw new Error('Nested list not supported');
+    //           } else {
+    //             // Increment depth before handling a list children
+    //             params.depth += 1;
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+
+    //   // process any children, attaching to first child if it exists
+    //   if (node.nodes) {
+    //     _somethingHere(params, node.nodes);
+    //   }
+    //   // Decrement depth when coming out of a list
+    //   if (nodeType === 'ol_list' || nodeType === 'ul_list') {
+    //     params.depth -= 1;
+    //   }
+    // });
+  }
+
   /**
   * @param {Object} props
   * @param {*} editor Slate Editor
@@ -177,15 +247,18 @@ function ClausePlugin() {
     const loadTemplateCallback = editor.props.clausePluginProps.loadTemplateObject;
     const { clauseProps } = editor.props.clausePluginProps;
     const { node, children } = props;
+    // console.log('node', node);
 
     switch (node.type) {
       case 'clause': {
         const src = node.data.get('src');
         const clauseid = node.data.get('clauseid');
+        console.log('node', node);
 
         if (src) {
           loadTemplateCallback(src.toString());
         }
+        _somethingHere(children);
 
         return (
           <ClauseComponent

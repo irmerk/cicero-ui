@@ -8,6 +8,7 @@ import * as S from './styles';
 
 /* Icons */
 import * as deleteIcon from '../icons/trash';
+import calculateButtonPopupPosition from '../icons/VariableListButton';
 
 /* Actions */
 import { titleGenerator, headerGenerator } from './actions';
@@ -35,6 +36,87 @@ function ClauseComponent(props) {
 
   const title = titleGenerator(props.templateUri);
   const header = headerGenerator(props.templateUri, clauseProps.HEADER_TITLE);
+
+
+  /**
+     * Render form in popup to set the link.
+     */
+  const renderListButton = (props, editor) => {
+    const { popupPosition, popupStyle } = calculateButtonPopupPosition(
+      editor,
+      hovering,
+      // setLinkFormPopup
+    );
+    const { value } = editor;
+    const { document, selection } = value;
+
+    const hasLinks = (editor) => {
+      const { value } = editor;
+      return value.inlines.some(inline => inline.type === 'link');
+    };
+
+    const isLinkBool = hasLinks(editor);
+    const selectedInlineHref = document.getClosestInline(selection.anchor.path);
+    const selectedText = editor.value.document
+      .getFragmentAtRange(editor.value.selection).text;
+
+    return (
+      <Ref innerRef={(node) => {
+        setLinkFormPopup = node;
+      }}>
+      <Popup
+        context={linkButtonRef}
+        content={
+          <Ref innerRef={(node) => {
+            setLinkForm = node;
+          }}>
+            <Form
+            onSubmit={event => submitLinkForm(event, isLinkBool) }>
+              <Form.Field>
+                <label>Link Text</label>
+                <Input
+                  placeholder='Text'
+                  name='text'
+                  defaultValue={
+                    (isLinkBool && !selectedText)
+                      ? editor.value.focusText.text
+                      : editor.value.fragment.text
+                  }
+                />
+              </Form.Field>
+              <Form.Field>
+                <label>Link URL</label>
+                <Input
+                  ref={hyperlinkInputRef}
+                  placeholder={'http://example.com'}
+                  defaultValue={
+                    isLinkBool && action.isOnlyLink(editor) && selectedInlineHref
+                      ? selectedInlineHref.data.get('href')
+                      : ''
+                  }
+                  name='url'
+                />
+              </Form.Field>
+              <Form.Field>
+                <Button
+                  secondary
+                  floated='left'
+                  disabled={!isLinkBool}
+                  onMouseDown={removeLinkForm}>Remove</Button>
+                <Button primary floated='right' type='submit'>Apply</Button>
+              </Form.Field>
+            </Form>
+            </Ref>
+          }
+        onClose={closeSetLinkForm}
+        on='click'
+        open // Keep it open always. We toggle only visibility so we can calculate its rect
+        position={popupPosition}
+        style={popupStyle}
+      />
+      </Ref>
+    );
+  };
 
   return (
     <S.ClauseWrapper
@@ -88,6 +170,7 @@ function ClauseComponent(props) {
         computedcolor={clauseProps.COMPUTED_COLOR}
       >
         {props.children}
+            {renderListButton(props, props.editor)}
       </S.ClauseBody>
     {errorsComponent}
   </S.ClauseWrapper>
@@ -100,6 +183,7 @@ ClauseComponent.propTypes = {
   attributes: PropTypes.PropTypes.shape({
     'data-key': PropTypes.string,
   }),
+  editor: PropTypes.any,
   errors: PropTypes.object,
   removeFromContract: PropTypes.func,
   clauseId: PropTypes.string,

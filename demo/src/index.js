@@ -14,31 +14,56 @@ import ContractEditor from '../../src/ContractEditor';
 
 const slateTransformer = new SlateTransformer();
 
-const templateUri = 'https://templates.accordproject.org/archives/acceptance-of-delivery@0.13.0.cta';
-const clauseText = `Acceptance of Delivery.
+/*
+
+Discount means an amount that we charge you for accepting the Card, which amount is:
+1. a percentage (Discount Rate) of the face amount of the Charge that you submit, or a flat per-
+Transaction fee, or a combination of both; and/or
+1. a Monthly Flat Fee (if you meet our requirements).
+
+Transaction Processing and Payments. Our Card acceptance, processing, and payment requirements are set forth in the Merchant Regulations. Some requirements are summarized here for ease of reference, but do not supersede the provisions in the Merchant Regulations.
+Payment for Charges. We will pay you, through our agent, according to your payment plan in US dollars for the face amount of Charges submitted from your Establishments less all applicable deductions, rejections, and withholdings, which include:
+1. the Discount,
+1. any amounts you owe us or our Affiliates,
+1. any amounts for which we have Chargebacks and
+1. any Credits you submit.
+
+Your initial Discount is indicated in the Agreement or otherwise provided to you in writing by us. In addition to your Discount we may charge you additional fees and assessments, as listed in the Merchant Regulations or as otherwise provided to you in writing by us. We may adjust any of these amounts and may change any other amount we charge you for accepting the Card.
+
+### SETTLEMENT
+
+#### Settlement Amount.
+
+Our agent will pay you according to your payment plan, as described below, in US dollars for the face amount of Charges submitted from your Establishments less all applicable deductions, rejections, and withholdings, which include:
+1. the Discount,
+1. any amounts you owe us or our Affiliates,
+1. any amounts for which we have Chargebacks, and
+1. any Credits you submit.
+*/
+
+const templateUri = 'https://templates.accordproject.org/archives/volumediscountulist@0.2.1.cta';
+// const templateUri = 'ap://volumediscountulist@0.2.1#76a90a50ac8db3a4161d4d53003e67740126ec0593c34192665a6f575f9ee070';
+const clauseText = `Volume-Based Card Acceptance Agreement [Abbreviated]
 ----
 
-<variable id="shipper" value="%22Party%20A%22"/> will be deemed to have completed its delivery obligations
-if in <variable id="receiver" value="%22Party%20B%22"/>'s opinion, the <variable id="deliverable" value="%22Widgets%22"/> satisfies the
-Acceptance Criteria, and <variable id="receiver" value="%22Party%20B%22"/> notifies <variable id="shipper" value="%22Party%20A%22"/> in writing
-that it is accepting the <variable id="deliverable" value="%22Widgets%22"/>.
+This Agreement is by and between Card, Inc., a New York corporation, and you, the Merchant. By accepting the Card, you agree to be bound by the Agreement.
 
-Inspection and Notice.
-----
+Our agent will subtract the full amount of all applicable deductions, rejections, and withholdings, from this payment to you (or debit your Bank Account), but if it cannot, then you must pay it promptly upon demand.
 
-<variable id="receiver" value="%22Party%20B%22"/> will have <variable id="businessDays" value="10"/> Business Days to inspect and
-evaluate the <variable id="deliverable" value="%22Widgets%22"/> on the delivery date before notifying
-<variable id="shipper" value="%22Party%20A%22"/> that it is either accepting or rejecting the
-<variable id="deliverable" value="%22Widgets%22"/>.
+#### Discount.
 
-Acceptance Criteria.
-----
+The Discount is determined according to the following table:
 
-The "Acceptance Criteria" are the specifications the <variable id="deliverable" value="%22Widgets%22"/>
-must meet for the <variable id="shipper" value="%22Party%20A%22"/> to comply with its requirements and
-obligations under this agreement, detailed in <variable id="attachment" value="%22Attachment%20X%22"/>, attached
-to this agreement.`;
+\`\`\` <list/>
+- <variable id="volumeAbove" value="0.0"/>$ million <= Volume < <variable id="volumeUpTo" value="1.0"/>$ million : <variable id="rate" value="3.1"/>%
+- <variable id="volumeAbove" value="1.0"/>$ million <= Volume < <variable id="volumeUpTo" value="10.0"/>$ million : <variable id="rate" value="3.1"/>%
+- <variable id="volumeAbove" value="10.0"/>$ million <= Volume < <variable id="volumeUpTo" value="50.0"/>$ million : <variable id="rate" value="2.9"/>%
+- <variable id="volumeAbove" value="50.0"/>$ million <= Volume < <variable id="volumeUpTo" value="500.0"/>$ million : <variable id="rate" value="2.5"/>%
+- <variable id="volumeAbove" value="500.0"/>$ million <= Volume < <variable id="volumeUpTo" value="1000.0"/>$ million : <variable id="rate" value="1.2"/>%
+- <variable id="volumeAbove" value="1000.0"/>$ million <= Volume < <variable id="volumeUpTo" value="1000000.0"/>$ million : <variable id="rate" value="0.1"/>%
+\`\`\``;
 
+// b0bb9fb2-3e90-4906-9f2b-da08517ad401
 const getContractSlateVal = async () => {
   const acceptanceOfDeliveryClause = `\`\`\` <clause src="${templateUri}" clauseid="123">
 ${clauseText}
