@@ -23,9 +23,9 @@
     "storybook": "start-storybook -p 9001 -c .storybook -s ./assets"
   },
   "dependencies": {
-    "@accordproject/markdown-editor": "0.9.9-20200407210050",
-    "@accordproject/markdown-slate": "0.10.2-20200325235844",
-    "@accordproject/markdown-html": "0.10.2-20200325235844",
+    "@accordproject/markdown-editor": "0.9.9-20200408192644",
+    "@accordproject/markdown-slate": "0.10.5-20200408161631",
+    "@accordproject/markdown-html": "0.10.5-20200408161631",
     "@storybook/addon-a11y": "^5.3.17",
     "@storybook/addon-actions": "^5.3.17",
     "@storybook/addon-docs": "^5.3.17",
